@@ -12,13 +12,13 @@ export class Game extends Entity {
 
   @property({
     type: 'number',
-    default: 1 * 60 * 1000,
+    default: 20 * 1000,
   })
   gameTime: number;
 
   @property({
     type: 'number',
-    default: 1 * 60 * 1000,
+    default: 2 * 1000,
   })
   resolveTime: number;
 

@@ -22,7 +22,7 @@ import {MoveController} from './move.controller';
 import {Raiden} from './raiden.controller';
 import {RaidenDataSource} from '../datasources';
 
-import RockPaperScissorsWinner from '../rpsWinner';
+import {RockPaperScissorsGetWinner, RockPaperScissorsGetLoser} from '../rpsWinner';
 
 export class GameController {
   constructor(
@@ -128,7 +128,7 @@ export class GameController {
     let raidenPayment: any, raidenPayments: any;
 
     // TODO - token should be in the move model
-    const token = '0x98a345f06e3A5DFe28EE0af38dd0780b4C0ed73B';
+    const token = '0xc778417E063141139Fce010982780140Aa0cD5Ab';
 
     game = await this.gameRepository.findById(id);
     currentTime = new Date().getTime();
@@ -140,6 +140,7 @@ export class GameController {
 
     moveController = new MoveController(await this.gameRepository.move);
 
+    // There should be a single move for a game
     moves = await moveController.find({where: {gameId: id}, order: ["_id ASC"]});
 
     if (moves.length == 0) {
@@ -173,9 +174,10 @@ export class GameController {
     console.log('sorted_moves_1', sorted_moves_1);
     console.log('sorted_moves_2', sorted_moves_2);
 
-    move1 = sorted_moves_1[2][0];
-    move2 = sorted_moves_2[2][0];
-    winningMove = RockPaperScissorsWinner[move1] == move2 ? move1 : move2;
+    move1 = sorted_moves_1[2][1] > 0 ? sorted_moves_1[2][0] : null;
+    move2 = sorted_moves_2[2][1] > 0 ? sorted_moves_2[2][0] : RockPaperScissorsGetLoser[move1];
+
+    winningMove = RockPaperScissorsGetLoser[move1] == move2 ? move1 : move2;
 
     guardian_amount = total_amount / 10;
     total_amount -= guardian_amount;
